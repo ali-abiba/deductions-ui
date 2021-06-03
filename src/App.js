@@ -1,5 +1,4 @@
 import './App.css';
-import Layout from "./components/layout/layout";
 import Login from "./components/login/login";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -7,8 +6,10 @@ import {useEffect, useState} from "react";
 import Cookies from "universal-cookie";
 import {getEmployer} from "./services/employer.service";
 import Home from "./components/home/home";
+import Button from "react-bootstrap/Button";
 
 const cookies = new Cookies();
+
 function App(props) {
     const [employer, setEmployer] = useState(null);
     const [employerId, setEmployerId] = useState(null);
@@ -18,11 +19,17 @@ function App(props) {
         cookies.set('employerId', employerData.id);
     };
 
+    const logout = () => {
+        cookies.remove('employerId');
+        setEmployer(null);
+        setEmployerId(null);
+    }
+
     useEffect(() => {
         setEmployerId(cookies.get('employerId'));
-        if(employerId) {
+        if (employerId) {
             getEmployer(employerId).then(response => {
-                if(response.ok) {
+                if (response.ok) {
                     return response.json();
                 }
             }).then(data => {
@@ -30,17 +37,18 @@ function App(props) {
             });
         }
 
-    }, [employerId, employer]);
+    }, [employerId]);
 
     return (
         <div className="App">
-            {employerId && employer &&
-            <Layout>
+            {employer &&
+            <div>
+                <Button className="float-right m-1" onClick={logout}>Logout</Button>
                 <Home employer={employer}/>
-            </Layout>
+            </div>
             }
-            {!employerId &&
-                <Login loginCallback={handleLogIn}/>
+            {!employer &&
+            <Login loginCallback={handleLogIn}/>
             }
         </div>
     );

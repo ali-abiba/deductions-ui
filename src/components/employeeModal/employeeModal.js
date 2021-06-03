@@ -1,10 +1,12 @@
+import './employeeModal.css'
+
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Toast from "react-bootstrap/Toast"
 import React, {useEffect, useState} from "react";
 import {createDependant} from "../../services/dependantService";
-import {saveEmployee} from "../../services/employeeService";
+import {deleteEmployee, saveEmployee} from "../../services/employeeService";
 
 const EmployeeModal = (props) => {
     const [showErrorToast, setShowErrorToast] = useState(false);
@@ -63,6 +65,15 @@ const EmployeeModal = (props) => {
         })
     }
 
+    const deleteEmployeeClick = () => {
+        deleteEmployee(props.employee).then(response => {
+            if(!response.ok) {
+                setShowErrorToast(true);
+                updateEmployee("delete");
+            }
+        });
+    }
+
     const closeError = () => {
         setShowErrorToast(false);
     }
@@ -74,11 +85,14 @@ const EmployeeModal = (props) => {
     }) : [];
     return (
         <div>
-            <Modal {...props}>
+            <Modal {...props} size="lg">
                 <Modal.Header closeButton>
                     <Modal.Title id="contained-modal-title-vcenter">
-                        {props.employee.id && `Edit Employee: ${props.employee.firstName} ${props.employee.lastName}`}
-                        {!props.employee.id && `Create New Employee`}
+                        <div className="row mx-auto">
+                            {props.employee.id && `Edit Employee`}
+                            {!props.employee.id && `Create New Employee`}
+                            {props.employee.id && <Button className="btn-danger float-right" onClick={deleteEmployeeClick}>Delete Employee</Button>}
+                        </div>
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>

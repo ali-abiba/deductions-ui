@@ -1,3 +1,5 @@
+import './employeeTable.css';
+
 import Table from 'react-bootstrap/Table';
 import Button from "react-bootstrap/Button";
 
@@ -11,6 +13,7 @@ const EmployeeTable = (props) => {
     const [showErrorToast, setShowErrorToast] = useState(false);
     const [showEmployeeModal, setShowEmployeeModal] = useState(false);
     const [employee, setEmployee] = useState({});
+
 
     const employeeUpdate = (type) => {
         getEmployeeTableData(props.employer.id).then(response => {
@@ -60,12 +63,12 @@ const EmployeeTable = (props) => {
 
     const tableRows = tableData ? tableData.map((employee) => {
         return(
-            <tr key={employee.id} onClick={() => editEmployee(employee.id)}>
+            <tr className="employeeRow" key={employee.id} onClick={() => editEmployee(employee.id)}>
                 <td>{employee.name}</td>
                 <td>{employee.dependants}</td>
-                <td>{employee.salary}</td>
-                <td>{employee.netSalary}</td>
-                <td>{employee.salary - employee.netSalary}</td>
+                <td>${employee.salary.toFixed(2)}</td>
+                <td>${employee.netSalary.toFixed(2)}</td>
+                <td>${(employee.salary - employee.netSalary).toFixed(2)}</td>
             </tr>
         )
     }) : [];
@@ -77,9 +80,9 @@ const EmployeeTable = (props) => {
                     <tr>
                         <th>Name</th>
                         <th># of Dependants</th>
-                        <th>Salary</th>
-                        <th>Net Salary</th>
-                        <th>Total Deductions</th>
+                        <th>Salary (Bi-Weekly)</th>
+                        <th>Net Salary (Bi-Weekly)</th>
+                        <th>Total Deductions(Bi-Weekly)</th>
                     </tr>
                 </thead>
                 <tbody>
